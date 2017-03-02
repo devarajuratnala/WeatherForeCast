@@ -7,5 +7,7 @@ public enum TaskData {
     SUCCESS,
     BAD_RESPONSE,
     IO_EXCEPTION,
-    TOO_MANY_REQUESTS;
+    TOO_MANY_REQUESTS,
+    OK,
+    CITY_NOT_FOUND, JSON_EXCEPTION;
 }

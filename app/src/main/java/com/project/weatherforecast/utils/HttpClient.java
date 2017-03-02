@@ -146,11 +146,12 @@ public abstract class HttpClient extends AsyncTask<String, String, HttpOutput> {
     private URL generateURL(String[] coords) throws UnsupportedEncodingException, MalformedURLException {
         String apiKey = activity.getResources().getString(R.string.apiKey);
         StringBuilder urlBuilder = new StringBuilder(Constants.ServiceType.CURRENT_WEATHER_DATA);
-        urlBuilder.append(getAPIName()).append("?");
+        urlBuilder.append("?");
         urlBuilder.append("lat=").append(coords[0]).append("&lon=").append(coords[1]);
         urlBuilder.append("&lang=").append(getLanguage());
         urlBuilder.append("&mode=json");
         urlBuilder.append("&appid=").append(apiKey);
+        Log.e("url",urlBuilder.toString());
         return new URL(urlBuilder.toString());
     }
 
