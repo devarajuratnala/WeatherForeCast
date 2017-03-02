@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">WeatherForecast</string>
+    <string name="loading_data">Loading weather data</string>
+    <string name="apiKey">8bf5f13c04d3d73882b65c708828ebf9</string>
+    <string name="msg_err_parsing_json">Error while parsing json data</string>
+    <string name="msg_too_many_requests">Too many requests ocoured</string>
+    <string name="msg_connection_problem">Bad response from server</string>
+    <string name="msg_connection_not_available">Internet connection error</string>
+    <string name="getting_location">Fetching current location.</string>
+    <string name="dialog_cancel">No</string>
+    <string name="location_settings">GPS Not Enabled</string>
+    <string name="location_settings_message">Do you wants to turn On GPS?</string>
+    <string name="location_settings_button">Yes</string>
+    <string name="sunrise_sunset">Sunrise/Sunset</string>
+    <string name="uv_index">UV Index</string>
+    <string name="pressure">Pressure</string>
+    <string name="visibility">Visibility</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+</resources>
