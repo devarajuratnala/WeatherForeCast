@@ -39,6 +39,53 @@
                 android:text="82  C"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_big" />
+
+
+            <LinearLayout
+                android:weightSum="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_weight="0.5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/image_up_arrow"
+                        android:src="@drawable/ic_up_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/text_temp_up"
+                        android:text="32"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/text_size_x_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="0.5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/image_down_arrow"
+                        android:src="@drawable/ic_down_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/text_temp_down"
+                        android:text="24"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_size_x_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
 
         <include
