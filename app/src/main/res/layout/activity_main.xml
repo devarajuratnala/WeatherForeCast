@@ -17,13 +17,15 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="0.4"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:background="@drawable/view_background_white"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_City_Name"
+                android:id="@+id/text_view_City_Name"
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:layout_height="wrap_content"
@@ -33,66 +35,79 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/text_view_temperature"
+                android:layout_width="match_parent"
+                android:gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="82  C"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_big" />
 
-
-            <LinearLayout
-                android:weightSum="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_weight="0.5"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:id="@+id/image_up_arrow"
-                        android:src="@drawable/ic_up_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                    <TextView
-                        android:id="@+id/text_temp_up"
-                        android:text="32"
-                        android:gravity="center"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_size_x_small"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_weight="0.5"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:id="@+id/image_down_arrow"
-                        android:src="@drawable/ic_down_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                    <TextView
-                        android:id="@+id/text_temp_down"
-                        android:text="24"
-                        android:textColor="@color/colorWhite"
-                        android:gravity="center"
-                        android:textSize="@dimen/text_size_x_small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
-            </LinearLayout>
-
+            <ImageView
+                android:id="@+id/image_current_weather"
+                android:scaleType="centerInside"
+                android:background="@drawable/ic_foggy"
+                android:layout_marginBottom="23dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" />
         </LinearLayout>
 
         <include
             layout="@layout/layout_today_weather_data"
             android:layout_width="0dp"
             android:layout_marginRight="5dp"
-            android:layout_weight="0.7"
+            android:layout_weight="0.6"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/text_view_current_day_tab"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.5"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:text="Today Weather"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/text_view_next_day_tab"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.5"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="Coming Days Weather"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_size_small" />
+    </LinearLayout>
+
+    <ViewFlipper
+        android:id="@+id/viewflipper_weather_forecast"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/listview_currentday_forecast"
+            android:background="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ListView
+            android:id="@+id/listview_nextday_forecast"
+            android:background="@color/colorBlue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </ViewFlipper>
+
 </LinearLayout>

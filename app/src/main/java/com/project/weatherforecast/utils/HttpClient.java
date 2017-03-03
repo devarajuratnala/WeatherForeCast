@@ -52,16 +52,16 @@ public abstract class HttpClient extends AsyncTask<String, String, HttpOutput> {
     protected HttpOutput doInBackground(String... params) {
         HttpOutput output = new HttpOutput();
         String response = "";
-        String[] coords = new String[]{};
 
-        if (params != null && params.length > 0) {
+
+        /*if (params != null && params.length > 0) {
             String lat = params[1];
             String lon = params[2];
             coords = new String[]{lat, lon};
-        }
+        }*/
         if (response.isEmpty()) {
             try {
-                URL url = generateURL(coords);
+                URL url = generateURL(params);
                 if (BuildConfig.DEBUG) Log.i("URL", url.toString());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 if (urlConnection.getResponseCode() == 200) {
@@ -143,14 +143,22 @@ public abstract class HttpClient extends AsyncTask<String, String, HttpOutput> {
         return language;
     }
 
-    private URL generateURL(String[] coords) throws UnsupportedEncodingException, MalformedURLException {
+    private URL generateURL(String[] params) throws UnsupportedEncodingException, MalformedURLException {
+        String[] coords = new String[]{};
+        String apiName = "";
+        if (params != null && params.length > 0) {
+            apiName = params[0];
+            coords = new String[]{params[1], params[2]};
+        }
+
         String apiKey = activity.getResources().getString(R.string.apiKey);
-        StringBuilder urlBuilder = new StringBuilder(Constants.ServiceType.CURRENT_WEATHER_DATA);
+        StringBuilder urlBuilder = new StringBuilder(apiName.equalsIgnoreCase("weather") ? Constants.ServiceType.CURRENT_WEATHER_DATA : Constants.ServiceType.FORECAST_DATA);
         urlBuilder.append("?");
         urlBuilder.append("lat=").append(coords[0]).append("&lon=").append(coords[1]);
         urlBuilder.append("&lang=").append(getLanguage());
         urlBuilder.append("&mode=json");
         urlBuilder.append("&appid=").append(apiKey);
+        urlBuilder.append("&units=metric");
         Log.e("url",urlBuilder.toString());
         return new URL(urlBuilder.toString());
     }

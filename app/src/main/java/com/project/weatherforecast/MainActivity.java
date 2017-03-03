@@ -13,8 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,27 +23,34 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
-import com.project.weatherforecast.models.ForeCastData;
+import com.project.weatherforecast.adapter.DayForecastAdapter;
+import com.project.weatherforecast.models.DayForeCastData;
+import com.project.weatherforecast.utils.Common;
 import com.project.weatherforecast.utils.HttpClient;
 import com.project.weatherforecast.utils.HttpOutput;
 import com.project.weatherforecast.utils.ParseResponse;
-import com.project.weatherforecast.utils.TaskData;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener {
     LocationManager mLocationManager;
     ProgressDialog mProgressDialog;
     protected static final int PERMISSIONS_ACCESS_FINE_LOCATION = 1;
@@ -56,20 +62,42 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     boolean canGetLocation = false;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private List<DayForeCastData> mListNextDaysForeCast;
+    private List<DayForeCastData> mListTodayForeCast;
     Location loc;
-    TextView cityName;
-    ForeCastData mForeCastData;
+    TextView mTextViewCityName, mTextViewWind, mTextViewHumidity, mTextViewVisiblity,
+            mTextViewPressure, mTextViewSunset, mTextViewSunrise,
+            mTextViewTemperature,
+            mTextViewCurrentDayTab, mTextViewNextDaysTab;
+    DayForeCastData mDayForeCastData;
+    ImageView mImageViewCurrentWeather;
+    ViewFlipper mViewflipperWeatherForecast;
+    ListView mListViewDayForecast, mListViewAllDayForeCast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
             initVariables();
+            initControls();
+
             loc = getLocation();
             if (loc != null) {
                 mLatitude = loc.getLatitude();
                 mLongitude = loc.getLongitude();
-                new mForeCastDataTask(this, this, mProgressDialog).execute("coords", Double.toString(mLatitude), Double.toString(mLongitude)).execute();
+                if (isNetworkAvailable()) {
+                    try {
+                        new DayForeCastDataTask(this, this, mProgressDialog).execute("weather", Double.toString(mLatitude), Double.toString(mLongitude)).execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        new NextDaysForeCastDataTask(this, this, mProgressDialog).execute("forecast", Double.toString(mLatitude), Double.toString(mLongitude)).execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -92,9 +120,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     void initVariables() {
+        mDayForeCastData = new DayForeCastData();
+        mListNextDaysForeCast = new ArrayList<>();
+        mListTodayForeCast = new ArrayList<>();
+    }
+
+    //Initialize All Controls in the View
+    void initControls() {
         mProgressDialog = new ProgressDialog(MainActivity.this);
-        mForeCastData = new ForeCastData();
-        cityName = (TextView) findViewById(R.id.text_City_Name);
+        mTextViewCityName = (TextView) findViewById(R.id.text_view_City_Name);
+        mTextViewWind = (TextView) findViewById(R.id.text_view_wind);
+        mTextViewHumidity = (TextView) findViewById(R.id.text_view_humidity);
+        mTextViewVisiblity = (TextView) findViewById(R.id.text_view_visiblity);
+        mTextViewPressure = (TextView) findViewById(R.id.text_view_pressure);
+        mTextViewSunset = (TextView) findViewById(R.id.text_view_sunset);
+        mTextViewSunrise = (TextView) findViewById(R.id.text_view_sunrise);
+        mTextViewTemperature = (TextView) findViewById(R.id.text_view_temperature);
+        mImageViewCurrentWeather = (ImageView) findViewById(R.id.image_current_weather);
+        mTextViewCurrentDayTab = (TextView) findViewById(R.id.text_view_current_day_tab);
+        mTextViewCurrentDayTab.setOnClickListener(this);
+        mTextViewNextDaysTab = (TextView) findViewById(R.id.text_view_next_day_tab);
+        mTextViewNextDaysTab.setOnClickListener(this);
+        mViewflipperWeatherForecast = (ViewFlipper) findViewById(R.id.viewflipper_weather_forecast);
+        mListViewDayForecast = (ListView)findViewById(R.id.listview_currentday_forecast);
+        mListViewAllDayForeCast = (ListView)findViewById(R.id.listview_nextday_forecast);
     }
 
     private Location getLocation() {
@@ -206,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         try {
             mLocationManager.removeUpdates(this);
         } catch (SecurityException e) {
-            Log.e("LocationManager", "Error while trying to stop listening for location updates. This is probably a permissions issue", e);
+            if (BuildConfig.DEBUG)
+                Log.e("LocationManager", "Error while trying to stop listening for location updates. This is probably a permissions issue", e);
         }
-        Log.i("LOCATION (" + location.getProvider().toUpperCase() + ")", location.getLatitude() + ", " + location.getLongitude());
+        if (BuildConfig.DEBUG)
+            Log.i("LOCATION (" + location.getProvider().toUpperCase() + ")", location.getLatitude() + ", " + location.getLongitude());
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
 
@@ -237,8 +288,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    class mForeCastDataTask extends HttpClient {
-        public mForeCastDataTask(Context context, MainActivity activity, ProgressDialog progressDialog) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.text_view_current_day_tab:
+                mViewflipperWeatherForecast.showPrevious();
+                mTextViewCurrentDayTab.setBackgroundResource(R.color.colorPrimaryDark);
+                mTextViewNextDaysTab.setBackgroundResource(R.color.colorPrimary);
+
+                break;
+            case R.id.text_view_next_day_tab:
+                mViewflipperWeatherForecast.showNext();
+                mTextViewCurrentDayTab.setBackgroundResource(R.color.colorPrimary);
+                mTextViewNextDaysTab.setBackgroundResource(R.color.colorPrimaryDark);
+                break;
+        }
+    }
+
+    class DayForeCastDataTask extends HttpClient {
+
+        public DayForeCastDataTask(Context context, MainActivity activity, ProgressDialog progressDialog) {
             super(context, activity, progressDialog);
         }
 
@@ -265,12 +334,68 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         @Override
         protected void updateMainUI() {
-            updateUI();
+            updateDayWeatherUI();
         }
     }
 
-    void updateUI(){
-        cityName.setText(mForeCastData.getCity()+", "+mForeCastData.getCountry());
+    class NextDaysForeCastDataTask extends HttpClient {
+
+        public NextDaysForeCastDataTask(Context context, MainActivity activity, ProgressDialog progressDialog) {
+            super(context, activity, progressDialog);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loading = 0;
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(HttpOutput output) {
+            super.onPostExecute(output);
+        }
+
+        @Override
+        protected ParseResponse parseResponse(String response) {
+            return parseNextDayResponse(response);
+        }
+
+        @Override
+        protected String getAPIName() {
+            return "forecast";
+        }
+
+        @Override
+        protected void updateMainUI() {
+            updateForecastUI();
+        }
+    }
+
+    private void updateForecastUI() {
+        DayForecastAdapter dayForecastAdapter = new DayForecastAdapter(MainActivity.this, mListTodayForeCast);
+        mListViewDayForecast.setAdapter(dayForecastAdapter);
+        DayForecastAdapter daysForecastAdapter = new DayForecastAdapter(MainActivity.this, mListNextDaysForeCast);
+        mListViewAllDayForeCast.setAdapter(daysForecastAdapter);
+    }
+
+
+    void updateDayWeatherUI() {
+        try {
+           // DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
+            mTextViewCityName.setText(mDayForeCastData.getCity() + ", " + mDayForeCastData.getCountry());
+            mTextViewWind.setText(mDayForeCastData.getWind());
+            mTextViewHumidity.setText(mDayForeCastData.getHumidity());
+            mTextViewPressure.setText(mDayForeCastData.getPressure());
+            mTextViewSunset.setText(Common.FormatTime(mDayForeCastData.getSunset(),MainActivity.this));
+            mTextViewSunrise.setText(Common.FormatTime(mDayForeCastData.getSunrise(),MainActivity.this));
+            mTextViewTemperature.setText(mDayForeCastData.getTemperature());
+            mTextViewVisiblity.setText(mDayForeCastData.getVisiblity());
+            mImageViewCurrentWeather.setBackground(mDayForeCastData.getIcon());
+        } catch (Exception e) {
+            e.getMessage();
+
+        }
+
     }
     private ParseResponse parseCurrentDayJson(String result) {
         try {
@@ -286,26 +411,108 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             JSONObject countryObj = reader.optJSONObject("sys");
             if (countryObj != null) {
                 country = countryObj.getString("country");
-                 mForeCastData.setSunrise(countryObj.getString("sunrise"));
-                 mForeCastData.setSunset(countryObj.getString("sunset"));
+                mDayForeCastData.setSunrise(countryObj.getString("sunrise"));
+                mDayForeCastData.setSunset(countryObj.getString("sunset"));
             }
-            mForeCastData.setCity(city);
-            mForeCastData.setCountry(country);
+            mDayForeCastData.setCity(city);
+            mDayForeCastData.setCountry(country);
             JSONObject main = reader.getJSONObject("main");
-            mForeCastData.setTemperature(main.getString("temp"));
-            mForeCastData.setDescription(reader.getJSONArray("weather").getJSONObject(0).getString("description"));
+            mDayForeCastData.setTemperature(main.getString("temp") + " " + (char) 0x00B0 + "C");
+            mDayForeCastData.setTemperaturemax(main.getString("temp_max"));
+            mDayForeCastData.setTemperaturemin(main.getString("temp_min"));
+            mDayForeCastData.setDescription(reader.getJSONArray("weather").getJSONObject(0).getString("description"));
             JSONObject windObj = reader.getJSONObject("wind");
-            mForeCastData.setWind(windObj.getString("speed"));
+            mDayForeCastData.setWind(windObj.getString("speed") + " m/s");
             if (windObj.has("deg")) {
-                  mForeCastData.setWindDirectionDegree(windObj.getDouble("deg"));
+                mDayForeCastData.setWindDirectionDegree(windObj.getDouble("deg"));
             } else {
-                Log.e("parseTodayJson", "No wind direction available");
-                mForeCastData.setWindDirectionDegree(null);
+                if (BuildConfig.DEBUG) Log.e("parseTodayJson", "No wind direction available");
+                mDayForeCastData.setWindDirectionDegree(null);
             }
-            mForeCastData.setPressure(main.getString("pressure"));
-            mForeCastData.setHumidity(main.getString("humidity"));
+            mDayForeCastData.setPressure(main.getString("pressure") + " hpa");
+            mDayForeCastData.setHumidity(main.getString("humidity") + " %");
+            mDayForeCastData.setVisiblity("850");
+            mDayForeCastData.setIcon(setWeatherIcon(Integer.parseInt(reader.optJSONArray("weather").getJSONObject(0).getString("id")), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), getApplicationContext()));
 
+        } catch (JSONException e) {
+            if (BuildConfig.DEBUG) Log.e("JSONException Data", result);
+            e.printStackTrace();
+            return ParseResponse.JSON_EXCEPTION;
+        }
 
+        return ParseResponse.OK;
+    }
+
+    public ParseResponse parseNextDayResponse(String result) {
+        int i;
+        try {
+            JSONObject reader = new JSONObject(result);
+
+            final String code = reader.optString("cod");
+            if ("404".equals(code)) {
+                if (mListNextDaysForeCast == null) {
+                    mListNextDaysForeCast = new ArrayList<>();
+                    mListTodayForeCast = new ArrayList<>();
+                }
+                return ParseResponse.CITY_NOT_FOUND;
+            }
+
+            mListNextDaysForeCast = new ArrayList<>();
+            mListTodayForeCast = new ArrayList<>();
+
+            JSONArray list = reader.getJSONArray("list");
+            for (i = 0; i < list.length(); i++) {
+                DayForeCastData dayForeCastData = new DayForeCastData();
+
+                JSONObject listItem = list.getJSONObject(i);
+                JSONObject main = listItem.getJSONObject("main");
+                dayForeCastData.setDate(listItem.getString("dt"));
+                dayForeCastData.setTemperature(main.getString("temp")+ " " + (char) 0x00B0 + "C");
+                dayForeCastData.setTemperaturemax(main.getString("temp_max")+ " " + (char) 0x00B0 + "C");
+                dayForeCastData.setTemperaturemin(main.getString("temp_min")+ " " + (char) 0x00B0 + "C");
+                dayForeCastData.setDescription(listItem.optJSONArray("weather").getJSONObject(0).getString("description"));
+                JSONObject windObj = listItem.optJSONObject("wind");
+                if (windObj != null) {
+                    dayForeCastData.setWind(windObj.getString("speed") +" m/s");
+                    dayForeCastData.setWindDirectionDegree(windObj.getDouble("deg"));
+                }
+                dayForeCastData.setPressure(main.getString("pressure")+" hpa");
+                dayForeCastData.setHumidity(main.getString("humidity")+" %");
+
+                JSONObject rainObj = listItem.optJSONObject("rain");
+                String rain = "";
+                if (rainObj != null) {
+                    rain = getRainString(rainObj);
+                } else {
+                    JSONObject snowObj = listItem.optJSONObject("snow");
+                    if (snowObj != null) {
+                        rain = getRainString(snowObj);
+                    } else {
+                        rain = "0";
+                    }
+                }
+                dayForeCastData.setRain(rain);
+
+                final String idString = listItem.optJSONArray("weather").getJSONObject(0).getString("id");
+                dayForeCastData.setId(idString);
+
+                final String dateMsString = listItem.getString("dt") + "000";
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(Long.parseLong(dateMsString));
+                //dayForeCastData.setIcon(setWeatherIcon(Integer.parseInt(idString), cal.get(Calendar.HOUR_OF_DAY)));
+                mDayForeCastData.setIcon(setWeatherIcon(Integer.parseInt(idString), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), getApplicationContext()));
+                Calendar today = Calendar.getInstance();
+                if (cal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+                    mListTodayForeCast.add(dayForeCastData);
+                } /*else if (cal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR) + 1) {
+                    longTermTomorrowWeather.add(dayForeCastData);
+                }*/ else {
+                    mListNextDaysForeCast.add(dayForeCastData);
+                }
+            }
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+            editor.putString("lastLongterm", result);
+            editor.commit();
         } catch (JSONException e) {
             Log.e("JSONException Data", result);
             e.printStackTrace();
@@ -313,5 +520,52 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
         return ParseResponse.OK;
+    }
+
+    public static String getRainString(JSONObject rainObj) {
+        String rain = "0";
+        if (rainObj != null) {
+            rain = rainObj.optString("3h", "fail");
+            if ("fail".equals(rain)) {
+                rain = rainObj.optString("1h", "0");
+            }
+        }
+        return rain;
+    }
+
+    private Drawable setWeatherIcon(int actualId, int hourOfDay, Context context) {
+        int id = actualId / 100;
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_sunrise);
+        if (actualId == 800) {
+            if (hourOfDay >= 7 && hourOfDay < 17) {
+                icon = ContextCompat.getDrawable(context, R.drawable.ic_sunrise);
+            } else if (hourOfDay >= 17 && hourOfDay < 20) {
+                icon = ContextCompat.getDrawable(context, R.drawable.ic_sunset);
+            } else {
+                icon = ContextCompat.getDrawable(context, R.drawable.ic_moon);
+            }
+        } else {
+            switch (id) {
+                case 2:
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_thunder);
+                    break;
+                case 3:
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_drizzle);
+                    break;
+                case 7:
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_foggy);
+                    break;
+                case 8:
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_cloud);
+                    break;
+                case 6:
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_foggy);
+                    break;
+                case 5:
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_drizzle);
+                    break;
+            }
+        }
+        return icon;
     }
 }

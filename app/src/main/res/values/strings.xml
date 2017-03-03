@@ -11,10 +11,12 @@
     <string name="location_settings">GPS Not Enabled</string>
     <string name="location_settings_message">Do you wants to turn On GPS?</string>
     <string name="location_settings_button">Yes</string>
-    <string name="sunrise_sunset">Sunrise/Sunset</string>
-    <string name="uv_index">UV Index</string>
+    <string name="sunset">Sunset</string>
+    <string name="Sunrise">Sunrise</string>
     <string name="pressure">Pressure</string>
     <string name="visibility">Visibility</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
+    <string name="temp_max">Temp. Max</string>
+    <string name="temp_min">Temp. Min</string>
 </resources>
