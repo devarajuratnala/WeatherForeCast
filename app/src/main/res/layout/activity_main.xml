@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/screen_bg_sun_rise"
@@ -74,7 +73,7 @@
             android:layout_weight="0.5"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:text="Today Weather"
+            android:text="@string/today_forecast"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_size_small" />
 
@@ -85,7 +84,7 @@
             android:layout_weight="0.5"
             android:background="@color/colorPrimary"
             android:gravity="center"
-            android:text="Coming Days Weather"
+            android:text="@string/next_4_days_forecast"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_size_small" />
     </LinearLayout>
@@ -97,13 +96,11 @@
 
         <ListView
             android:id="@+id/listview_currentday_forecast"
-            android:background="@color/colorAccent"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <ListView
             android:id="@+id/listview_nextday_forecast"
-            android:background="@color/colorBlue"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

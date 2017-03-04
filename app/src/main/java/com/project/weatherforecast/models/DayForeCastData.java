@@ -2,6 +2,8 @@ package com.project.weatherforecast.models;
 
 import android.graphics.drawable.Drawable;
 
+import com.project.weatherforecast.utils.Common;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,26 +12,23 @@ import java.util.Locale;
 /**
  * Author       : Devaraju Ratnala
  * Created Date : 03-02-2015
- * Purpose      : This class is a Day Forecast Data Moodel
+ * Purpose      : This class is a Day Forecast Data Model
  * APK Version  : 1.0
  */
 
 public class DayForeCastData {
     private String city;
     private String country;
-    private Date date;
+    private String date;
     private String temperature;
     private String temperaturemin;
     private String temperaturemax;
     private String description;
     private String wind;
-    private Double windDirectionDegree;
     private String pressure;
     private String humidity;
-    private String rain;
     private String id;
     private Drawable icon;
-    private String lastUpdated;
     private Date sunrise;
     private Date sunset;
     private String visiblity;
@@ -50,15 +49,12 @@ public class DayForeCastData {
         this.country = country;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
     public void setDate(String dateString) {
-        setDate(ConvertStringToDate(dateString));
+        this.date = Common.FormatDateWithTime(dateString);
     }
 
     public String getTemperature() {
@@ -67,10 +63,6 @@ public class DayForeCastData {
 
     public void setTemperature(String temperature) {
         this.temperature = temperature;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(String description) {
@@ -85,12 +77,7 @@ public class DayForeCastData {
         this.wind = wind;
     }
 
-    public Double getWindDirectionDegree() {
-        return windDirectionDegree;
-    }
-
     public void setWindDirectionDegree(Double windDirectionDegree) {
-        this.windDirectionDegree = windDirectionDegree;
     }
 
     public String getPressure() {
@@ -109,12 +96,8 @@ public class DayForeCastData {
         this.humidity = humidity;
     }
 
-    public String getRain() {
-        return rain;
-    }
 
     public void setRain(String rain) {
-        this.rain = rain;
     }
 
     public String getId() {
@@ -192,7 +175,6 @@ public class DayForeCastData {
         Date datetime;
         datetime = new Date(Long.parseLong(dateString) * 1000);
         return datetime;
-
-
     }
+
 }

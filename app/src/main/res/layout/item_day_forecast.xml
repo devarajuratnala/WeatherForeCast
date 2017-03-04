@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
+    android:background="@color/colorGrey"
+    android:layout_margin="10dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -23,7 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hyderabad,IN"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_small"
                 android:textStyle="bold" />
@@ -34,7 +34,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="82  C"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_big" />
         </LinearLayout>
@@ -43,8 +42,7 @@
             android:id="@+id/image_current_weather"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_sunrise" />
+            android:layout_gravity="center" />
     </LinearLayout>
 
     <LinearLayout

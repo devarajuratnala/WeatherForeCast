@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 import com.project.weatherforecast.R;
 import com.project.weatherforecast.models.DayForeCastData;
-import com.project.weatherforecast.utils.Common;
 
 import java.util.List;
 
 /**
- * Created by Super on 3/3/2017.
+ * Author       : Devaraju Ratnala
+ * Created Date : 03-02-2015
+ * Purpose      : This is a adapter class to load weather forecast data into listivew
+ * APK Version  : 1.0
  */
 
 public class DayForecastAdapter extends BaseAdapter {
@@ -54,8 +56,7 @@ public class DayForecastAdapter extends BaseAdapter {
         Holder holder = new Holder();
         View rowView = convertView;
         try {
-            if (convertView == null) {
-                rowView = inflater.inflate(R.layout.item_day_forecast, null);
+            if (convertView == null) rowView = inflater.inflate(R.layout.item_day_forecast, null);
                 holder.mTextViewDate = (TextView) rowView.findViewById(R.id.text_view_date);
                 holder.mTextViewWind = (TextView) rowView.findViewById(R.id.text_view_wind);
                 holder.mTextViewHumidity = (TextView) rowView.findViewById(R.id.text_view_humidity);
@@ -64,8 +65,8 @@ public class DayForecastAdapter extends BaseAdapter {
                 holder.mTextViewTemperatureMin = (TextView) rowView.findViewById(R.id.text_view_temperature_min);
                 holder.mTextViewTemperature = (TextView) rowView.findViewById(R.id.text_view_temperature);
                 holder.mImageViewWeather = (ImageView) rowView.findViewById(R.id.image_current_weather);
-            }
-            holder.mTextViewDate.setText("Time : " + Common.FormatTime(mListNextDaysForeCast.get(position).getDate(), mContext));
+            //}
+            holder.mTextViewDate.setText("Time : " + mListNextDaysForeCast.get(position).getDate());
             holder.mTextViewWind.setText(mListNextDaysForeCast.get(position).getWind());
             holder.mTextViewHumidity.setText(mListNextDaysForeCast.get(position).getHumidity());
             holder.mTextViewPressure.setText(mListNextDaysForeCast.get(position).getPressure());

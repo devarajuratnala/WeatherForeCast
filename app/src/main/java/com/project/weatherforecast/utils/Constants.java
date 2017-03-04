@@ -1,7 +1,10 @@
 package com.project.weatherforecast.utils;
 
 /**
- * Created by Super on 3/2/2017.
+ * Author       : Devaraju Ratnala
+ * Created Date : 03-02-2015
+ * Purpose      : This class is used for to maintain all API Urls
+ * APK Version  : 1.0
  */
 
 public class Constants {
