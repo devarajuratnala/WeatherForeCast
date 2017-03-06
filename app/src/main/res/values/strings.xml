@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeatherForecast</string>
+    <string name="app_name">Weather Forecast</string>
     <string name="loading_data">Loading weather data</string>
     <string name="apiKey">8bf5f13c04d3d73882b65c708828ebf9</string>
     <string name="msg_err_parsing_json">Error while parsing json data</string>
@@ -20,4 +20,10 @@
     <string name="temp_min">Temp. Min</string>
     <string name="next_4_days_forecast">Next 4 Days Forecast</string>
     <string name="today_forecast">Today Forecast</string>
+    <string name="dialog_no_internet">No Internet</string>
+    <string name="dialog_no_inter_message">You have no active internet connection.</string>
+    <string name="dialog_enable_gps">Enable GPS</string>
+    <string name="dialog_enable_3g">Enable 3G</string>
+    <string name="dialog_enable_wifi">Enable WIFI</string>
+    <string name="dialog_exit">Exit</string>
 </resources>

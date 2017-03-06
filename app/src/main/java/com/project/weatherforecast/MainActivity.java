@@ -24,7 +24,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -70,11 +73,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Location mLocation;
     TextView mTextViewCityName, mTextViewWind, mTextViewHumidity, mTextViewVisiblity,
             mTextViewPressure, mTextViewSunset, mTextViewSunrise, mTextViewTemperature,
-            mTextViewCurrentDayTab, mTextViewNextDaysTab;
+            mTextViewCurrentDayTab, mTextViewNextDaysTab, mTextViewDescription;
     DayForeCastData mDayForeCastData;
     ImageView mImageViewCurrentWeather;
     ViewFlipper mViewfinderWeatherForecast;
     ListView mListViewDayForecast, mListViewAllDayForeCast;
+    private AlertDialog mInternetDialog;
+    private String mMetrics = "C";
     //endregion
 
     //region Override Methods
@@ -83,35 +88,36 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
+            initToolbar();
             initVariables();
             initControls();
             loadWeatherData();
         }catch (Exception ex){
             ex.printStackTrace();
         }
-
     }
 
-    private void loadWeatherData() {
-        mLocation = getLocation();
-        if (mLocation != null) {
-            mLatitude = mLocation.getLatitude();
-            mLongitude = mLocation.getLongitude();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        switch (item.getItemId()) {
+            case R.id.miCelsius:
+                mMetrics = "C";
+                loadWeatherData();
+                break;
+            case R.id.miFahrenheit:
+                mMetrics = "F";
+                loadWeatherData();
+                break;
         }
-        if (isNetworkAvailable()) {
-            try {
-                new DayForeCastDataTask(this, this, mProgressDialog).execute("weather", Double.toString(mLatitude), Double.toString(mLongitude)).execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                new NextDaysForeCastDataTask(this, this, mProgressDialog).execute("forecast", Double.toString(mLatitude), Double.toString(mLongitude)).execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            showNoConnectionDialog();
-        }
+        return true;
     }
 
     @Override
@@ -214,9 +220,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 JSONObject listItem = list.getJSONObject(i);
                 JSONObject main = listItem.getJSONObject("main");
                 dayForeCastData.setDate(listItem.getString("dt"));
-                dayForeCastData.setTemperature(main.getString("temp") + " " + (char) 0x00B0 + "C");
-                dayForeCastData.setTemperaturemax(main.getString("temp_max") + " " + (char) 0x00B0 + "C");
-                dayForeCastData.setTemperaturemin(main.getString("temp_min") + " " + (char) 0x00B0 + "C");
+                dayForeCastData.setTemperature(main.getString("temp") + " " + (char) 0x00B0 + mMetrics);
+                dayForeCastData.setTemperaturemax(main.getString("temp_max") + " " + (char) 0x00B0 + mMetrics);
+                dayForeCastData.setTemperaturemin(main.getString("temp_min") + " " + (char) 0x00B0 + mMetrics);
                 dayForeCastData.setDescription(listItem.optJSONArray("weather").getJSONObject(0).getString("description"));
                 JSONObject windObj = listItem.optJSONObject("wind");
                 if (windObj != null) {
@@ -238,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         rain = "0";
                     }
                 }
-                dayForeCastData.setRain(rain);
+                dayForeCastData.setRain();
 
                 final String idString = listItem.optJSONArray("weather").getJSONObject(0).getString("id");
                 dayForeCastData.setId(idString);
@@ -277,6 +283,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     //endregion
 
     //region Private Methods
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void loadWeatherData() {
+        mLocation = getLocation();
+        if (mLocation != null) {
+            mLatitude = mLocation.getLatitude();
+            mLongitude = mLocation.getLongitude();
+        }
+        if (isNetworkAvailable()) {
+            try {
+                new DayForeCastDataTask(this, this, mProgressDialog).execute("weather", Double.toString(mLatitude), Double.toString(mLongitude), mMetrics).execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                new NextDaysForeCastDataTask(this, this, mProgressDialog).execute("forecast", Double.toString(mLatitude), Double.toString(mLongitude), mMetrics).execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            showNoConnectionDialog();
+        }
+    }
     private void initVariables() {
         mDayForeCastData = new DayForeCastData();
         mListNextDaysForeCast = new ArrayList<>();
@@ -293,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mTextViewSunset = (TextView) findViewById(R.id.text_view_sunset);
         mTextViewSunrise = (TextView) findViewById(R.id.text_view_sunrise);
         mTextViewTemperature = (TextView) findViewById(R.id.text_view_temperature);
+        mTextViewDescription = (TextView) findViewById(R.id.text_view_Description);
         mImageViewCurrentWeather = (ImageView) findViewById(R.id.image_current_weather);
         mTextViewCurrentDayTab = (TextView) findViewById(R.id.text_view_current_day_tab);
         mTextViewCurrentDayTab.setOnClickListener(this);
@@ -414,7 +447,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             mTextViewSunrise.setText(Common.FormatTime(mDayForeCastData.getSunrise(),MainActivity.this));
             mTextViewTemperature.setText(mDayForeCastData.getTemperature());
             mTextViewVisiblity.setText(mDayForeCastData.getVisiblity());
-            mImageViewCurrentWeather.setBackground(mDayForeCastData.getIcon());
+            mImageViewCurrentWeather.setImageDrawable(mDayForeCastData.getIcon());
+            mTextViewDescription.setText(mDayForeCastData.getDescription());
         } catch (Exception e) {
             e.getMessage();
 
@@ -441,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             mDayForeCastData.setCity(city);
             mDayForeCastData.setCountry(country);
             JSONObject main = reader.getJSONObject("main");
-            mDayForeCastData.setTemperature(main.getString("temp") + " " + (char) 0x00B0 + "C");
+            mDayForeCastData.setTemperature(main.getString("temp") + " " + (char) 0x00B0 + mMetrics);
             mDayForeCastData.setTemperaturemax(main.getString("temp_max"));
             mDayForeCastData.setTemperaturemin(main.getString("temp_min"));
             mDayForeCastData.setDescription(reader.getJSONArray("weather").getJSONObject(0).getString("description"));
@@ -502,31 +536,51 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return icon;
     }
 
-    public void showNoConnectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setCancelable(true);
-        builder.setMessage(R.string.msg_connection_not_available);
-        builder.setTitle("Connection Error");
-        builder.setPositiveButton(R.string.location_settings_button, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                startActivityForResult(new Intent(Settings.ACTION_WIRELESS_SETTINGS), INTERNET_OPTIONS);
-            }
-        });
+    private void showNoConnectionDialog() {
+        AlertDialog.Builder internetBuilder = new AlertDialog.Builder(
+                MainActivity.this);
+        internetBuilder.setCancelable(false);
+        internetBuilder
+                .setTitle(getString(R.string.dialog_no_internet))
+                .setMessage(getString(R.string.dialog_no_inter_message))
+                .setPositiveButton(getString(R.string.dialog_enable_3g),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                // continue with delete
+                                Intent intent = new Intent(
+                                        Settings.ACTION_SETTINGS);
+                                startActivityForResult(intent, INTERNET_OPTIONS);
+                                removeInternetDialog();
+                            }
+                        })
+                .setNeutralButton(getString(R.string.dialog_enable_wifi),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), INTERNET_OPTIONS);
+                                removeInternetDialog();
+                            }
+                        })
+                .setNegativeButton(getString(R.string.dialog_exit),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                removeInternetDialog();
+                                finish();
+                                moveTaskToBack(true);
+                            }
+                        });
+        mInternetDialog = internetBuilder.create();
+        mInternetDialog.show();
+    }
 
-        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                return;
-            }
-        });
+    private void removeInternetDialog() {
+        if (mInternetDialog != null && mInternetDialog.isShowing()) {
+            mInternetDialog.dismiss();
+            mInternetDialog = null;
 
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                return;
-            }
-        });
-
-        builder.show();
+        }
     }
     //endregion
 

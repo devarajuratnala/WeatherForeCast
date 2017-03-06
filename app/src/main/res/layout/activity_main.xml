@@ -3,9 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/screen_bg_sun_rise"
     android:orientation="vertical"
     tools:context="com.project.weatherforecast.MainActivity">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="@color/colorPrimaryDark">
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:weightSum="1"
@@ -19,7 +28,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
             android:layout_weight="0.4"
-            android:layout_height="wrap_content"
+            android:layout_height="130dp"
             android:background="@drawable/view_background_white"
             android:orientation="vertical">
 
@@ -42,15 +51,20 @@
                 android:text="82  C"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_big" />
-
             <ImageView
-                android:id="@+id/image_current_weather"
+                android:layout_weight="0.5"
                 android:scaleType="centerInside"
-                android:background="@drawable/ic_foggy"
-                android:layout_marginBottom="23dp"
-                android:layout_width="wrap_content"
+                android:id="@+id/image_current_weather"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center" />
+            <TextView
+                android:id="@+id/text_view_Description"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <include

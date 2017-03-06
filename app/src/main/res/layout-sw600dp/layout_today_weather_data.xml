@@ -2,85 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorGrey"
-    android:layout_margin="10dp"
+    android:background="@drawable/view_background_white"
     android:orientation="vertical">
-
-    <LinearLayout
-        android:weightSum="1"
-        android:background="@drawable/view_background_white"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_weight="0.5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_view_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/text_view_temperature"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_big" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/view_background_white" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:weightSum="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_weight="0.75"
-                android:id="@+id/image_current_weather"
-                android:scaleType="fitCenter"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" />
-
-            <TextView
-                android:id="@+id/text_view_Description"
-                android:layout_weight="0.25"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_margin="5dp"
-                android:gravity="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_small" />
-        </LinearLayout>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="3">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -107,12 +42,10 @@
 
 
         </LinearLayout>
-
         <View
+            android:background="@color/colorLightGrey"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorLightGrey" />
-
+            android:layout_height="match_parent" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -142,14 +75,56 @@
 
 
         </LinearLayout>
-
         <View
+            android:background="@color/colorLightGrey"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorLightGrey" />
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_visiblity" />
+
+            <TextView
+                android:id="@+id/text_view_visiblity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_medium" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/visibility"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_medium" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/colorLightGrey"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <LinearLayout
             android:layout_width="0dp"
+            android:layout_marginBottom="5dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -174,49 +149,14 @@
                 android:text="@string/pressure"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_medium" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorLightGrey" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_low_temperature" />
-
-            <TextView
-                android:id="@+id/text_view_temperature_min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_medium" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/temp_min"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_medium" />
 
 
         </LinearLayout>
 
         <View
+            android:background="@color/colorLightGrey"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorLightGrey" />
-
+            android:layout_height="match_parent" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -226,10 +166,10 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_high_temperature" />
+                android:src="@drawable/ic_sunrise" />
 
             <TextView
-                android:id="@+id/text_view_temperature_max"
+                android:id="@+id/text_view_sunrise"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -240,7 +180,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/temp_max"
+                android:text="@string/Sunrise"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_medium" />
+
+
+        </LinearLayout>
+        <View
+            android:background="@color/colorLightGrey"
+            android:layout_width="1dp"
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sunset" />
+
+            <TextView
+                android:id="@+id/text_view_sunset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_medium" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/sunset"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_medium" />
 
@@ -248,9 +221,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorLightGrey" />
 </LinearLayout>

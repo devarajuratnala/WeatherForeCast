@@ -6,4 +6,5 @@
     <color name="colorLightGrey">#19cacaca</color>
     <color name="colorGrey">#77000000</color>
     <color name="black_overlay">#66000000</color>
+    <color name="colorScreenBG">#FF0877C1</color>
 </resources>

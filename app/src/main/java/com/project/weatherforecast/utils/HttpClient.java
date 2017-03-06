@@ -53,12 +53,6 @@ public abstract class HttpClient extends AsyncTask<String, String, HttpOutput> {
         HttpOutput output = new HttpOutput();
         String response = "";
 
-
-        /*if (params != null && params.length > 0) {
-            String lat = params[1];
-            String lon = params[2];
-            coords = new String[]{lat, lon};
-        }*/
         if (response.isEmpty()) {
             try {
                 URL url = generateURL(params);
@@ -146,9 +140,11 @@ public abstract class HttpClient extends AsyncTask<String, String, HttpOutput> {
     private URL generateURL(String[] params) throws UnsupportedEncodingException, MalformedURLException {
         String[] coords = new String[]{};
         String apiName = "";
+        String metrics = "";
         if (params != null && params.length > 0) {
             apiName = params[0];
             coords = new String[]{params[1], params[2]};
+            metrics = params[3] == "C" ? "metric" : "imperial";
         }
 
         String apiKey = activity.getResources().getString(R.string.apiKey);
@@ -158,7 +154,7 @@ public abstract class HttpClient extends AsyncTask<String, String, HttpOutput> {
         urlBuilder.append("&lang=").append(getLanguage());
         urlBuilder.append("&mode=json");
         urlBuilder.append("&appid=").append(apiKey);
-        urlBuilder.append("&units=metric");
+        urlBuilder.append("&units=" + metrics);
         Log.e("url",urlBuilder.toString());
         return new URL(urlBuilder.toString());
     }

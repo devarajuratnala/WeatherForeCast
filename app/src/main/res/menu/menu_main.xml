@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/miCelsius"
+        android:icon="@drawable/ic_celsius"
+        app:showAsAction="ifRoom"
+        android:title="Celsius">
+    </item>
+    <item
+        android:id="@+id/miFahrenheit"
+        android:icon="@drawable/ic_fahrenheit"
+        app:showAsAction="ifRoom|withText"
+        android:title="Fahrenheit">
+    </item>
+</menu>

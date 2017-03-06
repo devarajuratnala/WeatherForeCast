@@ -46,11 +46,6 @@ public class DayForecastAdapter extends BaseAdapter {
         return position;
     }
 
-    public class Holder {
-        TextView mTextViewDate, mTextViewWind, mTextViewHumidity, mTextViewPressure, mTextViewTemperatureMax, mTextViewTemperatureMin, mTextViewTemperature;
-        ImageView mImageViewWeather;
-    }
-
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder = new Holder();
@@ -64,7 +59,9 @@ public class DayForecastAdapter extends BaseAdapter {
                 holder.mTextViewTemperatureMax = (TextView) rowView.findViewById(R.id.text_view_temperature_max);
                 holder.mTextViewTemperatureMin = (TextView) rowView.findViewById(R.id.text_view_temperature_min);
                 holder.mTextViewTemperature = (TextView) rowView.findViewById(R.id.text_view_temperature);
+                holder.mTextViewDescription = (TextView) rowView.findViewById(R.id.text_view_Description);
                 holder.mImageViewWeather = (ImageView) rowView.findViewById(R.id.image_current_weather);
+
             //}
             holder.mTextViewDate.setText("Time : " + mListNextDaysForeCast.get(position).getDate());
             holder.mTextViewWind.setText(mListNextDaysForeCast.get(position).getWind());
@@ -73,10 +70,16 @@ public class DayForecastAdapter extends BaseAdapter {
             holder.mTextViewTemperatureMax.setText(mListNextDaysForeCast.get(position).getTemperaturemax());
             holder.mTextViewTemperatureMin.setText(mListNextDaysForeCast.get(position).getTemperaturemin());
             holder.mTextViewTemperature.setText(mListNextDaysForeCast.get(position).getTemperature());
+            holder.mTextViewDescription.setText(mListNextDaysForeCast.get(position).getDescription());
             holder.mImageViewWeather.setImageDrawable(mListNextDaysForeCast.get(position).getIcon());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return rowView;
+    }
+
+    public class Holder {
+        TextView mTextViewDate, mTextViewWind, mTextViewHumidity, mTextViewPressure, mTextViewTemperatureMax, mTextViewTemperatureMin, mTextViewTemperature, mTextViewDescription;
+        ImageView mImageViewWeather;
     }
 }

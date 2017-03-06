@@ -68,7 +68,9 @@ public class DayForeCastData {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    public String getDescription() {
+        return description;
+    }
     public String getWind() {
         return wind;
     }
@@ -97,11 +99,7 @@ public class DayForeCastData {
     }
 
 
-    public void setRain(String rain) {
-    }
-
-    public String getId() {
-        return id;
+    public void setRain() {
     }
 
     public void setId(String id) {
