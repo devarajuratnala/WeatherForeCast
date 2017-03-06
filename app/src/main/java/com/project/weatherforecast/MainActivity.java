@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -168,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case PERMISSIONS_ACCESS_FINE_LOCATION:
-                getLocation();
-                break;
             case INTERNET_OPTIONS:
                 loadWeatherData();
                 break;
@@ -292,8 +289,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (mLocation != null) {
             mLatitude = mLocation.getLatitude();
             mLongitude = mLocation.getLongitude();
-        }
-        if (isNetworkAvailable()) {
+
+            if (isNetworkAvailable()) {
             try {
                 new DayForeCastDataTask(this, this, mProgressDialog).execute("weather", Double.toString(mLatitude), Double.toString(mLongitude), mMetrics).execute();
             } catch (Exception e) {
@@ -306,6 +303,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         } else {
             showNoConnectionDialog();
+        }
+        } else {
+            Toast.makeText(this, "Location Permission Not Granted", Toast.LENGTH_SHORT).show();
         }
     }
     private void initVariables() {
@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (grantResult != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Location Permission Denied", Toast.LENGTH_SHORT).show();
         } else {
-            getLocation();
+            loadWeatherData();
         }
 
     }
