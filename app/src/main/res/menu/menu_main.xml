@@ -5,6 +5,7 @@
         android:id="@+id/miCelsius"
         android:icon="@drawable/ic_celsius"
         app:showAsAction="ifRoom"
+        android:checked="true"
         android:title="Celsius">
     </item>
     <item

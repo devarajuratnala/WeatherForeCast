@@ -61,9 +61,7 @@ public class DayForecastAdapter extends BaseAdapter {
                 holder.mTextViewTemperature = (TextView) rowView.findViewById(R.id.text_view_temperature);
                 holder.mTextViewDescription = (TextView) rowView.findViewById(R.id.text_view_Description);
                 holder.mImageViewWeather = (ImageView) rowView.findViewById(R.id.image_current_weather);
-
-            //}
-            holder.mTextViewDate.setText("Time : " + mListNextDaysForeCast.get(position).getDate());
+            holder.mTextViewDate.setText(mListNextDaysForeCast.get(position).getDate());
             holder.mTextViewWind.setText(mListNextDaysForeCast.get(position).getWind());
             holder.mTextViewHumidity.setText(mListNextDaysForeCast.get(position).getHumidity());
             holder.mTextViewPressure.setText(mListNextDaysForeCast.get(position).getPressure());
